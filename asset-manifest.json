@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/TibiaPal_React/static/css/main.5f179be7.chunk.css",
+    "main.js": "/TibiaPal_React/static/js/main.e7f38a77.chunk.js",
+    "main.js.map": "/TibiaPal_React/static/js/main.e7f38a77.chunk.js.map",
+    "runtime-main.js": "/TibiaPal_React/static/js/runtime-main.ccbb58d0.js",
+    "runtime-main.js.map": "/TibiaPal_React/static/js/runtime-main.ccbb58d0.js.map",
+    "static/js/2.849da800.chunk.js": "/TibiaPal_React/static/js/2.849da800.chunk.js",
+    "static/js/2.849da800.chunk.js.map": "/TibiaPal_React/static/js/2.849da800.chunk.js.map",
+    "index.html": "/TibiaPal_React/index.html",
+    "static/css/main.5f179be7.chunk.css.map": "/TibiaPal_React/static/css/main.5f179be7.chunk.css.map",
+    "static/js/2.849da800.chunk.js.LICENSE.txt": "/TibiaPal_React/static/js/2.849da800.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/TibiaPal_React/static/media/Background_Artwork.9934e4ed.webp",
+    "static/media/Rashid.2fd96d3f.gif": "/TibiaPal_React/static/media/Rashid.2fd96d3f.gif",
+    "static/media/supported.c98e204a.png": "/TibiaPal_React/static/media/supported.c98e204a.png",
+    "static/media/tibia-logo.96216ffb.gif": "/TibiaPal_React/static/media/tibia-logo.96216ffb.gif",
+    "static/media/tibiapal-logo.9142e724.png": "/TibiaPal_React/static/media/tibiapal-logo.9142e724.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.ccbb58d0.js",
+    "static/js/2.849da800.chunk.js",
+    "static/css/main.5f179be7.chunk.css",
+    "static/js/main.e7f38a77.chunk.js"
+  ]
+}
