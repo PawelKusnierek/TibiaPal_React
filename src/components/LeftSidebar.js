@@ -1,10 +1,16 @@
+import reactDom from 'react-dom';
 import rashid from '../images/Rashid.gif'
+import MainContent from './MainContent'
+import AboutContact from './feature-content/AboutContact'
+import Tibialootsplit from './feature-content/Tibialootsplit'
+
+
 
 function LeftSidebar() {
 
     return (
         <nav id="left-sidebar">
-            <div id="latestNewsId" className="nav-item active" onLoad={activateLatestNews} onClick={activateLatestNews}>Latest News</div>
+            <div id="latestNewsId" className="nav-item active" onClick={activateLatestNews}>Latest News</div>
             <div id="aboutContactId" className="nav-item" onClick={activateAboutContact}>About & Contact</div>
             <div id="tibiaLootSplitId" className="nav-item" onClick={activateTibiaLootSplit}>TibiaLootSplit</div>
             <div id="bossTimersId" className="nav-item" onClick={activateBossTimers}>Boss Timers</div>
@@ -36,19 +42,28 @@ function LeftSidebar() {
     function activateLatestNews() {
         eraseActive();
         document.getElementById("latestNewsId").classList.add("active");
-        document.getElementById("main-content").innerHTML = "Latest News";
+
+        let content = document.getElementById("main-content")
+        reactDom.unmountComponentAtNode(content)
+        reactDom.render(<MainContent></MainContent>, content)
     }
 
     function activateAboutContact() {
         eraseActive();
         document.getElementById("aboutContactId").classList.add("active");
-        document.getElementById("main-content").innerHTML = "About & Contact";
+
+        let content = document.getElementById("main-content")
+        reactDom.unmountComponentAtNode(content)
+        reactDom.render(<AboutContact></AboutContact>, content)
     }
 
     function activateTibiaLootSplit() {
         eraseActive();
         document.getElementById("tibiaLootSplitId").classList.add("active");
-        document.getElementById("main-content").innerHTML = "TibiaLootSplit";
+        
+        let content = document.getElementById("main-content")
+        reactDom.unmountComponentAtNode(content)
+        reactDom.render(<Tibialootsplit></Tibialootsplit>, content)
     }
 
     function activateBossTimers() {

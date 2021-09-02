@@ -8,8 +8,6 @@ import LeftFooterSpace from './components/LeftFooterSpace'
 import Footer from './components/Footer'
 import RightFooterSpace from './components/RightFooterSpace'
 
-
-
 function App() {
   return (
     <div id="main-container">

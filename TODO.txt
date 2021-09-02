@@ -4,3 +4,6 @@ google ads
 Latest News content one place
 Update Latest News
 Archive?
+figure out onload.js
+fix main-content within main-content
+add icons to navbar
