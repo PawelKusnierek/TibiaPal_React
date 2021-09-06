@@ -1,13 +1,8 @@
+import React, { useState } from "react";
 import tibialootsplitphoto from '../../images/analyser.png'
 
-
 function Tibialootsplit() {
-    
-    function handleSubmit(event) {
-        event.preventDefault();
-        //initial_submit();
-    }
-    
+    const [lootSplitType, setLootSplitTypeType] = useState("RegularLootSplit");
     return (
         <div>
             <h4 id="howtouse"><br />How to use TibiaLootSplit:</h4>
@@ -17,17 +12,28 @@ function Tibialootsplit() {
             </ol>
             <img id="analyser_image" src={tibialootsplitphoto}
                 alt="Picture of 'Party Hunt' analsyer highlighting which button to click"></img>
-            <form id="tibialootsplitform" onSubmit={this.handleSubmit}>
+            <form id="tibialootsplitform">
                 <input type="text" id="analyserData" name="analyserData" placeholder="Paste party hunt session log here..." autocomplete="off" />
                 <br />
-                <input type="radio" id="regularlootsplit" name="lootsplittype" value="regularlootsplit" checked="checked" />Regular
-                <input type="radio" id="extraexpenseslootsplit" name="lootsplittype" value="extraexpenseslootsplit" />Add Extra Expenses
-                <input type="radio" id="removeplayerslootsplit" name="lootsplittype" value="removeplayerslootsplit" />Remove players
+                <span className="LootSplitTypeSpan" onClick={() => { setLootSplitTypeType("RegularLootSplit"); }}>
+                    <input type="radio" id="regularlootsplit" name="lootSplitType" value={lootSplitType} checked={lootSplitType === "RegularLootSplit"} />Regular
+                </span>
+                <span className="LootSplitTypeSpan" onClick={() => { setLootSplitTypeType("ExtraExpensesLootSplit"); }}>
+                    <input type="radio" id="extraexpenseslootsplit" name="lootSplitType" value={lootSplitType} checked={lootSplitType === "ExtraExpensesLootSplit"} />Add Extra Expenses
+                </span>
+                <span className="LootSplitTypeSpan" onClick={() => { setLootSplitTypeType("RemovePlayersLootSplit"); }}>
+                    <input type="radio" id="removeplayerslootsplit" name="lootSplitType" value={lootSplitType} checked={lootSplitType === "RemovePlayersLootSplit"} />Remove players
+                </span>
                 <br />
-                <input type="submit" id="submitbutton" value="Submit" />
-                <input type="button" onClick="location.href='https:/\/tibiapal.com/tibialootsplit';" value="Refresh page" />
-                <input type="button" onClick="view_tibialootsplit_history()" value="History" />
+                <button type="button" onClick={() => {window.initial_submit({ lootSplitType })}} value="Submit"> Submit </button>
+                <button type="button" onClick={window.view_tibialootsplit_history} value="History"> History </button>
             </form>
+
+
+
+
+
+
             <section id="list-remove-players">
 
             </section>
