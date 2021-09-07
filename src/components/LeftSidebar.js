@@ -3,10 +3,10 @@ import rashid from '../images/Rashid.gif'
 import MainContent from './MainContent'
 import AboutContact from './feature-content/AboutContact'
 import Tibialootsplit from './feature-content/Tibialootsplit'
-
-
+import { useEffect } from 'react';
 
 function LeftSidebar() {
+    useEffect(() => { find_rashid_city() });
 
     return (
         <nav id="left-sidebar">
@@ -60,7 +60,7 @@ function LeftSidebar() {
     function activateTibiaLootSplit() {
         eraseActive();
         document.getElementById("tibiaLootSplitId").classList.add("active");
-        
+
         let content = document.getElementById("main-content")
         reactDom.unmountComponentAtNode(content)
         reactDom.render(<Tibialootsplit></Tibialootsplit>, content)
@@ -150,6 +150,64 @@ function LeftSidebar() {
         eraseActive();
         document.getElementById("donatorsId").classList.add("active");
         document.getElementById("main-content").innerHTML = "Donators";
+    }
+
+    function find_rashid_city() {
+        let time = new Intl.DateTimeFormat("en-GB", {
+            dateStyle: "full",
+            timeStyle: "short",
+            timeZone: "Europe/Berlin",
+        }).format(new Date());
+        let first_comma = time.indexOf(",");
+        let day = time.substring(0, first_comma);
+        let hour = parseInt(time.substring(time.length - 5, time.length - 3));
+
+        let content_city = document.getElementById("rashid-city");
+
+        if (hour > 9) {
+            let city = find_city_based_on_day(day);
+            content_city.innerHTML = "Rashid in " + city;
+        } else {
+            let previous_day = find_previous_day(day);
+            let city = find_city_based_on_day(previous_day);
+            content_city.innerHTML = "Rashid in " + city;
+        }
+    }
+
+    function find_city_based_on_day(day) {
+        if (day === "Monday") {
+            return "Svargrond";
+        } else if (day === "Tuesday") {
+            return "Liberty Bay";
+        } else if (day === "Wednesday") {
+            return "Port Hope";
+        } else if (day === "Thursday") {
+            return "Ankrahmun";
+        } else if (day === "Friday") {
+            return "Darashia";
+        } else if (day === "Saturday") {
+            return "Edron";
+        } else if (day === "Sunday") {
+            return "Carlin";
+        }
+    }
+
+    function find_previous_day(day) {
+        if (day === "Monday") {
+            return "Sunday";
+        } else if (day === "Tuesday") {
+            return "Monday";
+        } else if (day === "Wednesday") {
+            return "Tuesday";
+        } else if (day === "Thursday") {
+            return "Wednesday";
+        } else if (day === "Friday") {
+            return "Thursday";
+        } else if (day === "Saturday") {
+            return "Friday";
+        } else if (day === "Sunday") {
+            return "Saturday";
+        }
     }
 }
 
