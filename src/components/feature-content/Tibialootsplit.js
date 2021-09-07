@@ -11,7 +11,7 @@ function Tibialootsplit() {
                 <li class="instructions-list">Paste the values into the input field and click 'Submit'</li>
             </ol>
             <img id="analyser_image" src={tibialootsplitphoto}
-                alt="Picture of 'Party Hunt' analsyer highlighting which button to click"></img>
+                alt="'Party Hunt' analsyer highlighting which button to click"></img>
             <form id="tibialootsplitform">
                 <input type="text" id="analyserData" name="analyserData" placeholder="Paste party hunt session log here..." autocomplete="off" />
                 <br />
@@ -25,14 +25,15 @@ function Tibialootsplit() {
                     <input type="radio" id="removeplayerslootsplit" name="lootSplitType" value={lootSplitType} checked={lootSplitType === "RemovePlayersLootSplit"} />Remove players
                 </span>
                 <br />
-                <button type="button" onClick={() => {window.initial_submit({ lootSplitType })}} value="Submit"> Submit </button>
+
+
+
+
+
+
+                <button type="button" onClick={() => window.initial_submit({ lootSplitType })} value="Submit"> Submit </button>
                 <button type="button" onClick={window.view_tibialootsplit_history} value="History"> History </button>
             </form>
-
-
-
-
-
 
             <section id="list-remove-players">
 

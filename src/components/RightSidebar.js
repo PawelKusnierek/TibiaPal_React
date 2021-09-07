@@ -3,7 +3,7 @@ function RightSidebar() {
         <aside id="right-sidebar">
             <section id="banner-paragraph">
                 <p class="donationparagraph">Subscribe to our YouTube channel for Tibia guides!<br />
-                    <a href="https://www.youtube.com/Kusnierr" target="_blank">youtube.com/Kusnierr</a>
+                    <a href="https://www.youtube.com/Kusnierr" target="_blank" rel="noreferrer">youtube.com/Kusnierr</a>
                 </p>
                 <section id="youtube-videos-container">
                     <h4><br />Latest Videos:</h4>

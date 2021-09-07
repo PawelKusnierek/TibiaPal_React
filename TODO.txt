@@ -8,3 +8,4 @@ figure out onload.js
 fix main-content within main-content
 add icons to navbar
 fix refresh page on tibialootsplit                 <input type="button" onClick="location.href='https:/\/tibiapal.com';" value="Refresh page" />
+FIGURE OUT ONLOAD.JS
