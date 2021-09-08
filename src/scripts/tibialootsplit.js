@@ -185,78 +185,7 @@
   
  
   
-  function view_tibialootsplit_history() {
-    remove_tibialootsplit_html();
-    document.getElementById("h4_history_tls").style.display = "block";
-    document.getElementById("tibialootsplit-history-table").style.display =
-      "initial";
   
-    const history = JSON.parse(
-      localStorage.getItem("tibialootsplitresults") || "[]"
-    );
-  
-    if (history.length > 5) {
-      number_of_loops = history.length / 6;
-      var tableRef = document
-        .getElementById("tibialootsplit-history-table")
-        .getElementsByTagName("tbody")[0];
-      for (j = 0; j < number_of_loops; j++) {
-        var newRow = tableRef.insertRow();
-        for (i = 0; i < 6; i++) {
-          index = 6 * j + i;
-          //covering 'first' result per row, i.e. the actual tibialootsplit results
-          if (index == 0 || index % 6 == 0) {
-            let cell = newRow.insertCell(0);
-            cell.id = index;
-            cell.innerHTML =
-              "<button id='" +
-              index +
-              "' onclick='results_from_history(this.id)';>Here</button>";
-          }
-          //covering 'third' result per row, i.e. the names of players
-          else if ((index + 3) % 6 == 0) {
-            let cell = newRow.insertCell(0);
-            cell.id = index;
-            players = history[index];
-            var players_array = players.split(",");
-            for (k = 0; k < players_array.length; k++) {
-              player = players_array[k];
-              player.trim();
-              cell.innerHTML = cell.innerHTML + player + "<br/>";
-            }
-          } else if ((index + 4) % 6 == 0) {
-            let cell = newRow.insertCell(0);
-            cell.id = index;
-            let cellTextBox = document.createTextNode(
-              Math.round(history[index] / 1000) + "k~"
-            );
-            cellTextBox.type = "text";
-            cellTextBox.name = "text" + index;
-            cellTextBox.id = index;
-            cell.appendChild(cellTextBox);
-          } else if ((index + 5) % 6 == 0) {
-            let cell = newRow.insertCell(0);
-            cell.id = index;
-            let cellTextBox = document.createTextNode(
-              Math.round(history[index] / 1000) + "k~"
-            );
-            cellTextBox.type = "text";
-            cellTextBox.name = "text" + index;
-            cellTextBox.id = index;
-            cell.appendChild(cellTextBox);
-          } else {
-            let cell = newRow.insertCell(0);
-            cell.id = index;
-            let cellTextBox = document.createTextNode(history[index]);
-            cellTextBox.type = "text";
-            cellTextBox.name = "text" + index;
-            cellTextBox.id = index;
-            cell.appendChild(cellTextBox);
-          }
-        }
-      }
-    }
-  }
   
   
   

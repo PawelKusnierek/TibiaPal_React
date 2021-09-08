@@ -4,7 +4,7 @@ import tibialootsplitphoto from '../../images/analyser.png'
 function Tibialootsplit() {
     const [lootSplitType, setLootSplitTypeType] = useState("RegularLootSplit");
     return (
-        <div>
+        <div id="tibialootsplitcontent">
             <h4 id="howtouse"><br />How to use TibiaLootSplit:</h4>
             <ol id="instruction-list">
                 <li class="instructions-list">In your 'Party Hunt' analyser select 'Copy to Clipboard'</li>
@@ -25,12 +25,8 @@ function Tibialootsplit() {
                     <input type="radio" id="removeplayerslootsplit" name="lootSplitType" value={lootSplitType} checked={lootSplitType === "RemovePlayersLootSplit"} />Remove players
                 </span>
                 <br />
-
-
-
-
                 <button type="button" onClick={() => initial_submit({ lootSplitType })} value="Submit"> Submit </button>
-                <button type="button" onClick={window.view_tibialootsplit_history} value="History"> History </button>
+                <button type="button" onClick={view_tibialootsplit_history} value="History"> History </button>
             </form>
 
             <section id="list-remove-players">
@@ -42,11 +38,13 @@ function Tibialootsplit() {
             <section id="results"></section>
             <section id="extra-expenses-div"></section>
             <table id="extra-expense-table" style={{ width: '100%' }}>
-                <tr>
-                    <th>Player</th>
-                    <th>Extra TC expense</th>
-                    <th>Extra gold expense (in k)</th>
-                </tr>
+                <tbody>
+                    <tr>
+                        <th>Player</th>
+                        <th>Extra TC expense</th>
+                        <th>Extra gold expense (in k)</th>
+                    </tr>
+                </tbody>
             </table>
             <section id="extra-container">
                 <input type="text" id="TCvalue" name="TCvalue" placeholder="Tibia Coin gold value" autocomplete="off" />
@@ -57,14 +55,16 @@ function Tibialootsplit() {
             <p id="h4_history_tls">TibiaLootSplit History</p>
 
             <table id="tibialootsplit-history-table" style={{ width: '100%' }}>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Players</th>
-                    <th>Total Profit</th>
-                    <th>Profit per player</th>
-                    <th>Results</th>
-                </tr>
+                <tbody>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Players</th>
+                        <th>Total Profit</th>
+                        <th>Profit per player</th>
+                        <th>Results</th>
+                    </tr>
+                </tbody>
             </table>
         </div>
     );
@@ -84,7 +84,7 @@ function Tibialootsplit() {
             is_regularlootsplit = true;
         } else if (lootSplitType["lootSplitType"] == "RemovePlayersLootSplit") {
             is_removeplayerslootsplit = true;
-        } else if (lootSplitType["lootSplitType"] == "extraexpenseslootsplit") {
+        } else if (lootSplitType["lootSplitType"] == "ExtraExpensesLootSplit") {
             is_extraexpenseslootsplit = true;
         }
 
@@ -135,13 +135,11 @@ function Tibialootsplit() {
                 return false;
             }
         }
-        //getting the raw analyser data
-        analyser_data = form.analyserData.value.replace(" (Leader)", "");
 
         // Parsing the data from the log to find out profit per person and the balance of each player
         let session_date = find_session_date(analyser_data);
         let session_duration = find_session_duration(analyser_data);
-        remove_first_section(analyser_data);
+        analyser_data = remove_first_section(analyser_data);
         let number_of_players = find_total_number_of_players(analyser_data);
         let players_and_their_balance = find_players_and_balance(
             analyser_data,
@@ -158,7 +156,7 @@ function Tibialootsplit() {
         );
 
         if (is_regularlootsplit) {
-            regularlootsplit(who_to_pay_and_how_much, total_profit, profit_per_person, resultsContent);
+            regularlootsplit(who_to_pay_and_how_much, total_profit, profit_per_person, resultsContent, session_date, session_duration, players_and_their_balance);
         } else if (is_extraexpenseslootsplit) {
             extra_expenses_click(players_and_their_balance);
         }
@@ -286,7 +284,7 @@ function Tibialootsplit() {
         return who_to_pay_and_how_much;
     }
 
-    function regularlootsplit(who_to_pay_and_how_much, total_profit, profit_per_person, resultsContent) {
+    function regularlootsplit(who_to_pay_and_how_much, total_profit, profit_per_person, resultsContent, session_date, session_duration, players_and_their_balance) {
         // Final update back to the site
         update_the_html(
             who_to_pay_and_how_much,
@@ -294,7 +292,7 @@ function Tibialootsplit() {
             profit_per_person,
             resultsContent
         );
-        update_the_history_results();
+        update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, session_date, session_duration, players_and_their_balance);
         document.getElementById("tibialootsplitform").reset();
     }
 
@@ -330,7 +328,7 @@ function Tibialootsplit() {
     }
 
     function remove_tibialootsplit_html() {
-        let main_content = document.getElementById("main-content");
+        let main_content = document.getElementById("tibialootsplitcontent");
 
         let extraExpensesDiv = document.getElementById("extra-expenses-div");
         extraExpensesDiv.innerHTML = "";
@@ -525,7 +523,7 @@ function Tibialootsplit() {
         //resultsContent.style.backgroundColor = "#272727e7"
     }
 
-    function update_the_history_results() {
+    function update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, session_date, session_duration, players_and_their_balance) {
         const maxHistoryLength = 90;
         const history = JSON.parse(
             localStorage.getItem("tibialootsplitresults") || "[]"
@@ -533,11 +531,11 @@ function Tibialootsplit() {
         const isHistoryMaxed = history.length === maxHistoryLength;
 
         let players_formatted = "";
-        for (let i = 0; i < player_names_list.length; i++) {
-            players_formatted = players_formatted + player_names_list[i] + ", ";
+        for (let i = 0; i < players_and_their_balance.length; i++) {
+            players_formatted = players_formatted + players_and_their_balance[i]['name'] + ", ";
         }
         players_formatted = players_formatted.slice(0, -2);
-        new_results = [
+        let new_results = [
             who_to_pay_and_how_much,
             profit_per_person,
             total_profit,
@@ -551,6 +549,77 @@ function Tibialootsplit() {
 
         const updatedHistory = new_results.concat(workingHistory);
         localStorage.setItem("tibialootsplitresults", JSON.stringify(updatedHistory));
+    }
+
+    function view_tibialootsplit_history() {
+        remove_tibialootsplit_html();
+        document.getElementById("h4_history_tls").style.display = "block";
+        document.getElementById("tibialootsplit-history-table").style.display =
+            "initial";
+
+        const history = JSON.parse(localStorage.getItem("tibialootsplitresults") || "[]");
+
+        if (history.length > 5) {
+            let number_of_loops = history.length / 6;
+            var tableRef = document
+                .getElementById("tibialootsplit-history-table")
+                .getElementsByTagName("tbody")[0];
+            for (let j = 0; j < number_of_loops; j++) {
+                var newRow = tableRef.insertRow();
+                for (let i = 0; i < 6; i++) {
+                    let index = 6 * j + i;
+                    //covering 'first' result per row, i.e. the actual tibialootsplit results
+                    if (index == 0 || index % 6 == 0) {
+                        let cell = newRow.insertCell(0);
+                        cell.id = index;
+                        cell.innerHTML =
+                            "<button id='" +
+                            index +
+                            "' onclick='results_from_history(this.id)';>Here</button>";
+                    }
+                    //covering 'third' result per row, i.e. the names of players
+                    else if ((index + 3) % 6 == 0) {
+                        let cell = newRow.insertCell(0);
+                        cell.id = index;
+                        let players = history[index];
+                        var players_array = players.split(",");
+                        for (let k = 0; k < players_array.length; k++) {
+                            let player = players_array[k];
+                            player.trim();
+                            cell.innerHTML = cell.innerHTML + player + "<br/>";
+                        }
+                    } else if ((index + 4) % 6 == 0) {
+                        let cell = newRow.insertCell(0);
+                        cell.id = index;
+                        let cellTextBox = document.createTextNode(
+                            Math.round(history[index] / 1000) + "k~"
+                        );
+                        cellTextBox.type = "text";
+                        cellTextBox.name = "text" + index;
+                        cellTextBox.id = index;
+                        cell.appendChild(cellTextBox);
+                    } else if ((index + 5) % 6 == 0) {
+                        let cell = newRow.insertCell(0);
+                        cell.id = index;
+                        let cellTextBox = document.createTextNode(
+                            Math.round(history[index] / 1000) + "k~"
+                        );
+                        cellTextBox.type = "text";
+                        cellTextBox.name = "text" + index;
+                        cellTextBox.id = index;
+                        cell.appendChild(cellTextBox);
+                    } else {
+                        let cell = newRow.insertCell(0);
+                        cell.id = index;
+                        let cellTextBox = document.createTextNode(history[index]);
+                        cellTextBox.type = "text";
+                        cellTextBox.name = "text" + index;
+                        cellTextBox.id = index;
+                        cell.appendChild(cellTextBox);
+                    }
+                }
+            }
+        }
     }
 }
 
