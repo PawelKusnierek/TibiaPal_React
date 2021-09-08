@@ -5,10 +5,11 @@ function Tibialootsplit() {
     const [lootSplitType, setLootSplitTypeType] = useState("RegularLootSplit");
     const [players_and_their_balance, set_players_and_their_balance] = useState("")
     const [number_of_players, set_number_of_players] = useState("")
+    const [total_profit, set_total_profit] = useState("")
     const [session_date, set_session_date] = useState("")
     const [session_duration, set_session_duration] = useState("")
 
-    
+
     return (
         <div id="tibialootsplitcontent">
             <h4 id="howtouse"><br />How to use TibiaLootSplit:</h4>
@@ -54,8 +55,9 @@ function Tibialootsplit() {
             </table>
             <section id="extra-container">
                 <input type="text" id="TCvalue" name="TCvalue" placeholder="Tibia Coin gold value" autocomplete="off" />
-                <input type="submit" id="submitextrabutton" value="Recalculate"
-                    onclick="event.preventDefault(); calculate_extra_expenses_click()" />
+                <button id="submitextrabutton" type="button" onClick={calculate_extra_expenses_click} value="Submit"> Recalculate </button>
+
+
             </section>
 
             <p id="h4_history_tls">TibiaLootSplit History</p>
@@ -154,6 +156,7 @@ function Tibialootsplit() {
             number_of_players
         );
         let total_profit = find_total_profit(players_and_their_balance);
+        set_total_profit(total_profit)
         let profit_per_person = total_profit / number_of_players;
 
         // Main logic part - works very well even if looks confusing, advise againt touching....
@@ -307,6 +310,7 @@ function Tibialootsplit() {
         remove_tibialootsplit_html();
         document.getElementById("extra-container").style.display = "block";
         document.getElementById("extra-expense-table").style.display = "initial";
+        set_players_and_their_balance(players_and_their_balance)
 
         for (let i = 0; i < players_and_their_balance.length; i++) {
             let player_name = players_and_their_balance[i].name;
@@ -525,9 +529,6 @@ function Tibialootsplit() {
         resultsContent.innerHTML =
             resultsContent.innerHTML +
             `<button type="button" id="copy-all-button" onClick='copy_whole_log()';>Copy all to Discord!</button><br><br>`;
-        //resultsContent.style.border = "1px #0c0c0ce7 dotted"
-        //resultsContent.style.borderRadius = "5px"
-        //resultsContent.style.backgroundColor = "#272727e7"
     }
 
     function update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, players_and_their_balance) {
@@ -684,6 +685,58 @@ function Tibialootsplit() {
         );
         update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, new_players_and_their_balance);
         document.getElementById("extra-expenses-div").innerHTML = "";
+    }
+
+    function calculate_extra_expenses_click() {
+        let tibia_coin_value = document.getElementById("TCvalue").value;
+        var tableRef = document
+            .getElementById("extra-expense-table")
+            .getElementsByTagName("tbody")[0];
+        let new_players_and_their_balance = players_and_their_balance;
+        let new_total_profit = total_profit;
+        for (let i = 1; i < tableRef.children.length; i++) {
+            let player_name = tableRef.children[i].cells[0].innerHTML;
+            let player_extra_tc = tableRef.children[i].cells[1].firstChild.value;
+            let player_extra_gold = tableRef.children[i].cells[2].firstChild.value;
+            let player_extra_expense = player_extra_tc * tibia_coin_value + player_extra_gold * 1000;
+            new_total_profit = new_total_profit - player_extra_expense;
+
+            /* this will need rework*/
+            new_players_and_their_balance[i - 1].balance = parseInt(new_players_and_their_balance[i - 1].balance) - player_extra_expense;
+        }
+
+        // re-calculating the payout based on updated figured
+        let profit_per_person = new_total_profit / number_of_players;
+        let who_to_pay_and_how_much = final_split(
+            new_players_and_their_balance,
+            profit_per_person,
+            number_of_players
+        );
+
+        // Final update back to the site
+        var results = document.createElement("div");
+        results.setAttribute("id", "results");
+        let main_content = document.getElementById("main-content");
+        main_content.appendChild(results);
+        let resultsContent = document.getElementById("resultsContent");
+        update_the_html(
+            who_to_pay_and_how_much,
+            new_total_profit,
+            profit_per_person,
+            resultsContent
+        );
+        update_the_history_results(who_to_pay_and_how_much, profit_per_person, new_total_profit, new_players_and_their_balance);
+        remove_old_html();
+    }
+
+    function remove_old_html() {
+        let main_content = document.getElementById("tibialootsplitcontent");
+        let extraExpensesDiv = document.getElementById("extra-expenses-div");
+        extraExpensesDiv.innerHTML = "";
+        let extraExpensesTable = document.getElementById("extra-expense-table");
+        main_content.removeChild(extraExpensesTable);
+        let extraContainer = document.getElementById("extra-container");
+        main_content.removeChild(extraContainer);
     }
 }
 

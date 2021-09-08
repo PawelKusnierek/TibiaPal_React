@@ -1,12 +1,10 @@
-update css into sass (or something else)
 expandable navbar/check removal of active classes
 google ads
 Latest News content one place
 Update Latest News
 Archive?
-figure out onload.js
-fix main-content within main-content
 add icons to navbar
 fix refresh page on tibialootsplit                 <input type="button" onClick="location.href='https:/\/tibiapal.com';" value="Refresh page" />
 move enable_expandable_div_buttons etc. out of OnLoad and to the appropriate features
 copy button tibialootsplit
+history results results_from_history(this.id)
