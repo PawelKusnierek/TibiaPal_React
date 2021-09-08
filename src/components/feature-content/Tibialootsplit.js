@@ -3,6 +3,12 @@ import tibialootsplitphoto from '../../images/analyser.png'
 
 function Tibialootsplit() {
     const [lootSplitType, setLootSplitTypeType] = useState("RegularLootSplit");
+    const [players_and_their_balance, set_players_and_their_balance] = useState("")
+    const [number_of_players, set_number_of_players] = useState("")
+    const [session_date, set_session_date] = useState("")
+    const [session_duration, set_session_duration] = useState("")
+
+    
     return (
         <div id="tibialootsplitcontent">
             <h4 id="howtouse"><br />How to use TibiaLootSplit:</h4>
@@ -33,8 +39,8 @@ function Tibialootsplit() {
 
             </section>
 
-            <input type="submit" id="submitremoveplayers" value="Calculate!"
-                onclick="event.preventDefault(); calculate_remove_players_click()" />
+            <button id="submitremoveplayers" type="button" onClick={calculate_remove_players_click} value="Submit"> Calculate! </button>
+
             <section id="results"></section>
             <section id="extra-expenses-div"></section>
             <table id="extra-expense-table" style={{ width: '100%' }}>
@@ -89,9 +95,12 @@ function Tibialootsplit() {
         }
 
         let analyser_data = form.analyserData.value.replace(" (Leader)", "");
-
+        let session_date = find_session_date(analyser_data);
+        let session_duration = find_session_duration(analyser_data);
+        set_session_date(session_date)
+        set_session_duration(session_duration)
         if (is_regularlootsplit || is_extraexpenseslootsplit) {
-            preplootsplit(is_regularlootsplit, is_extraexpenseslootsplit, analyser_data, form);
+            preplootsplit(is_regularlootsplit, is_extraexpenseslootsplit, analyser_data);
         } else if (is_removeplayerslootsplit) {
             prepare_remove_players_lootsplit(analyser_data);
         }
@@ -121,7 +130,7 @@ function Tibialootsplit() {
         return true;
     }
 
-    function preplootsplit(is_regularlootsplit, is_extraexpenseslootsplit, analyser_data, form) {
+    function preplootsplit(is_regularlootsplit, is_extraexpenseslootsplit, analyser_data) {
         //we remove the previous results
         let extraExpensesDiv = document.getElementById("extra-expenses-div");
         let resultsContent = document.getElementById("results");
@@ -137,10 +146,9 @@ function Tibialootsplit() {
         }
 
         // Parsing the data from the log to find out profit per person and the balance of each player
-        let session_date = find_session_date(analyser_data);
-        let session_duration = find_session_duration(analyser_data);
         analyser_data = remove_first_section(analyser_data);
         let number_of_players = find_total_number_of_players(analyser_data);
+        set_number_of_players(number_of_players)
         let players_and_their_balance = find_players_and_balance(
             analyser_data,
             number_of_players
@@ -156,7 +164,7 @@ function Tibialootsplit() {
         );
 
         if (is_regularlootsplit) {
-            regularlootsplit(who_to_pay_and_how_much, total_profit, profit_per_person, resultsContent, session_date, session_duration, players_and_their_balance);
+            regularlootsplit(who_to_pay_and_how_much, total_profit, profit_per_person, resultsContent, players_and_their_balance);
         } else if (is_extraexpenseslootsplit) {
             extra_expenses_click(players_and_their_balance);
         }
@@ -166,15 +174,14 @@ function Tibialootsplit() {
         //remove all other content
         remove_tibialootsplit_html();
 
-        let session_date = find_session_date(analyser_data);
-        let session_duration = find_session_duration(analyser_data);
         analyser_data = remove_first_section(analyser_data);
         let number_of_players = find_total_number_of_players(analyser_data);
+        set_number_of_players(number_of_players)
         let players_and_their_balance = find_players_and_balance(
             analyser_data,
             number_of_players
         );
-
+        set_players_and_their_balance(players_and_their_balance)
         add_players_and_checkboxes(players_and_their_balance);
     }
 
@@ -284,7 +291,7 @@ function Tibialootsplit() {
         return who_to_pay_and_how_much;
     }
 
-    function regularlootsplit(who_to_pay_and_how_much, total_profit, profit_per_person, resultsContent, session_date, session_duration, players_and_their_balance) {
+    function regularlootsplit(who_to_pay_and_how_much, total_profit, profit_per_person, resultsContent, players_and_their_balance) {
         // Final update back to the site
         update_the_html(
             who_to_pay_and_how_much,
@@ -292,7 +299,7 @@ function Tibialootsplit() {
             profit_per_person,
             resultsContent
         );
-        update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, session_date, session_duration, players_and_their_balance);
+        update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, players_and_their_balance);
         document.getElementById("tibialootsplitform").reset();
     }
 
@@ -523,7 +530,7 @@ function Tibialootsplit() {
         //resultsContent.style.backgroundColor = "#272727e7"
     }
 
-    function update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, session_date, session_duration, players_and_their_balance) {
+    function update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, players_and_their_balance) {
         const maxHistoryLength = 90;
         const history = JSON.parse(
             localStorage.getItem("tibialootsplitresults") || "[]"
@@ -620,6 +627,63 @@ function Tibialootsplit() {
                 }
             }
         }
+    }
+
+    function calculate_remove_players_click() {
+        let list_of_players_to_remove = [];
+        let list_of_players_to_keep = [];
+        let new_players_and_their_balance = players_and_their_balance;
+        for (var i = 0; i < new_players_and_their_balance.length; i++) {
+            let player = new_players_and_their_balance[i].name;
+            let checkbox_player = document.getElementById(player);
+            let checked = checkbox_player.checked;
+            if (!checked) {
+                list_of_players_to_remove.push(player);
+            } else {
+                list_of_players_to_keep.push(player);
+            }
+        }
+        if (list_of_players_to_remove.length > 0) {
+            let player_names_list = list_of_players_to_keep;
+            for (var j = 0; j < list_of_players_to_remove.length; j++) {
+                for (var k = new_players_and_their_balance.length - 1; k >= 0; k--) {
+                    if (new_players_and_their_balance[k].name == list_of_players_to_remove[j]) {
+                        new_players_and_their_balance.splice(k, 1);
+                    }
+                }
+            }
+        }
+        let new_number_of_players = number_of_players - list_of_players_to_remove.length;
+
+        let total_profit = find_total_profit(new_players_and_their_balance);
+        let profit_per_person = total_profit / new_number_of_players;
+
+        // Main logic part - works very well even if looks confusing, advise againt touching....
+        let who_to_pay_and_how_much = final_split(
+            new_players_and_their_balance,
+            profit_per_person,
+            new_number_of_players
+        );
+
+        document.getElementById("list-remove-players").innerHTML = "";
+        let calculate_button = document.getElementById("submitremoveplayers");
+        calculate_button.style.display = "none";
+
+        // Final update back to the site
+        var results = document.createElement("div");
+        results.setAttribute("id", "results");
+        let main_content = document.getElementById("tibialootsplitcontent");
+        main_content.appendChild(results);
+
+        let resultsContent = document.getElementById("results");
+        update_the_html(
+            who_to_pay_and_how_much,
+            total_profit,
+            profit_per_person,
+            resultsContent
+        );
+        update_the_history_results(who_to_pay_and_how_much, profit_per_person, total_profit, new_players_and_their_balance);
+        document.getElementById("extra-expenses-div").innerHTML = "";
     }
 }
 
